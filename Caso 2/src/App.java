@@ -1,5 +1,10 @@
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -31,18 +36,30 @@ public class App {
                 linea_matrices = linea_matrices.substring(5);
                 String[] matrices = linea_matrices.split(",");
                 lista_matrices = new int[matrices.length][2];
-                
+
                 for (int i = 0; i < matrices.length; i++) {
                     String[] dimensiones = matrices[i].split("x");
                     int NF = Integer.parseInt(dimensiones[0].trim());
                     int NC = Integer.parseInt(dimensiones[1].trim());
                     lista_matrices[i][0] = NF;
                     lista_matrices[i][1] = NC;
-                    System.out.println("NF: " + NF + " NC: " + NC);
                 }
 
                 String resultado = new App().opcion_1(TP, NPROC, lista_matrices);
-                System.out.println(resultado);
+                String[] partes = resultado.split(";");
+
+                String rutaBase = "Resultados";
+
+                for (int i = 1; i < partes.length; i++) {
+                    String nombreArchivo = rutaBase + "\\"+ "proc" + (i) + ".txt"; 
+                    try (BufferedWriter bw = new BufferedWriter(new FileWriter(nombreArchivo))) {
+                        bw.write(partes[i].trim()); 
+                        System.out.println("Archivo creado: " + nombreArchivo);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 System.out.println("Proceso finalizado");
                 archivo.close();
                 sc.close();
@@ -60,7 +77,7 @@ public class App {
         for (int p = 0; p < NPROC; p++) {
 
             int bytesPorEntero = 4;
-            info += "TP: " + TP + "\n";
+            info += ";TP: " + TP + "\n";
             int NF = lista_matrices[p][0];
             int NC = lista_matrices[p][1];
             info += "NF: " + NF + "\n" +"NC :" + NC + "\n";
