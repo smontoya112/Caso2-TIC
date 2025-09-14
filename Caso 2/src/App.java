@@ -1,18 +1,55 @@
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.Scanner;
 
 public class App {
     
     HashMap<Integer, Integer> tabla_paginas = new HashMap<Integer, Integer>();    
     HashMap<Integer, Pagina> memoria_principal = new HashMap<Integer, Pagina>();
     HashMap<Integer, Pagina> memoria_virtual = new HashMap<Integer, Pagina>();
+
+    @SuppressWarnings("ConvertToTryWithResources")
     public static void main(String[] args) throws Exception {
-        App app = new App();
-        int TP = 128;
-        int NPROC = 2;
-        int[][] lista_matrices = { { 4, 4 } , { 8, 8 } };
-        String resultado = app.opcion_1(TP, NPROC, lista_matrices);
-        System.out.println(resultado);
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Elija una opcion: \n1. Opcion 1 \n2. Opcion 2");
+        int opcion = sc.nextInt();
+        switch (opcion) {
+            case 1 -> {
+                System.out.println("Ingrese la direccion del txt");
+                String direccion = sc.next();
+                File file = new File(direccion);
+                Scanner archivo = new Scanner(file);
+                System.out.println("Leyendo archivo...");
+                int TP;
+                int NPROC;
+                int[][] lista_matrices;
+                String linea = archivo.nextLine();
+                TP = Integer.parseInt(linea.substring(3).strip());
+                NPROC = Integer.parseInt(archivo.nextLine().substring(6).strip());
+                String linea_matrices = archivo.nextLine();
+                linea_matrices = linea_matrices.substring(5);
+                String[] matrices = linea_matrices.split(",");
+                lista_matrices = new int[matrices.length][2];
+                
+                for (int i = 0; i < matrices.length; i++) {
+                    String[] dimensiones = matrices[i].split("x");
+                    int NF = Integer.parseInt(dimensiones[0].trim());
+                    int NC = Integer.parseInt(dimensiones[1].trim());
+                    lista_matrices[i][0] = NF;
+                    lista_matrices[i][1] = NC;
+                    System.out.println("NF: " + NF + " NC: " + NC);
+                }
+
+                String resultado = new App().opcion_1(TP, NPROC, lista_matrices);
+                System.out.println(resultado);
+                System.out.println("Proceso finalizado");
+                archivo.close();
+                sc.close();
+            }
+            case 2 -> System.out.println("Opcion 2 no implementada");
+            default -> System.out.println("Opcion no valida");
+        }
     }
 
 
