@@ -57,7 +57,7 @@ public class Proceso {
                     char accion = partes[3].trim().charAt(0);
 
                     int dv = (paginaVirtual * TP) + offset;
-                    dvList.add(dv);
+                    dvList.add(paginaVirtual);
 
                 }
             }
