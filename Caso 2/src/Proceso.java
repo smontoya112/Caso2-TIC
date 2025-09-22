@@ -11,6 +11,7 @@ public class Proceso {
     public int TP;
     public List<Integer> dvList= new java.util.ArrayList<>();
     public Map<Integer, Integer> tablaPaginas = new java.util.HashMap<>();
+    public int puntero = 0;
     public int fallos = 0;
     public int hits = 0;
     public int referencias = 0;
@@ -25,17 +26,24 @@ public class Proceso {
         this.marcos = marcos;
         
     }
-
+    public void aumentarTs(){
+        for (int key : tablaPaginas.keySet()) {
+            tablaPaginas.put(key, tablaPaginas.get(key) + 1);
+        }
+    }
 
     private void leerArchivo(String nombreArchivo) {
         
          try {
-            List<String> lineas = Files.readAllLines(Paths.get("Resultados/" + nombreArchivo));
-
+            List<String> lineas = Files.readAllLines(Paths.get("Caso2-TIC\\Caso 2\\src\\Resultados\\" + nombreArchivo));
+            
             
             for (String linea : lineas) {
                 if (linea.startsWith("TP:")) {
                     this.TP = Integer.parseInt(linea.split(":")[1].trim());
+                }
+                if (linea.startsWith("NR:")) {
+                    this.referencias = Integer.parseInt(linea.split(":")[1].trim());
                 }
             }
 
@@ -51,13 +59,13 @@ public class Proceso {
                     int dv = (paginaVirtual * TP) + offset;
                     dvList.add(dv);
 
-                    System.out.println("Ref: " + linea + " -> DV: " + dv + " (" + accion + ")");
                 }
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     
 
 }

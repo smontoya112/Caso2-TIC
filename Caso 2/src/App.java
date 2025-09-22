@@ -3,19 +3,24 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.cert.LDAPCertStoreParameters;
-import java.util.HashMap;
-import java.util.Scanner;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Queue;
+import java.util.Scanner;
 
 public class App {
     
-    HashMap<Integer, Integer> tabla_paginas = new HashMap<Integer, Integer>();    
-    HashMap<Integer, Pagina> memoria_principal = new HashMap<Integer, Pagina>();
-    HashMap<Integer, Pagina> memoria_virtual = new HashMap<Integer, Pagina>();
+    public int EncontrarMayor(Object[] valores) {
+        int mayor = Integer.MIN_VALUE;
+        int indice = 0;
+        for (int i=0; i<valores.length; i++) {
+            if (((Integer) valores[i]) > mayor) {
+                mayor = (Integer) valores[i];
+                indice = i;
+            }
+        }
+        return indice;
+    }
 
     @SuppressWarnings("ConvertToTryWithResources")
     public static void main(String[] args) throws Exception {
@@ -138,27 +143,83 @@ public class App {
     public void opcion_2(int marcos, int NPROC) {
         int marcos_proceso= marcos/NPROC;
         Queue<Proceso> cola = new java.util.LinkedList<>();
-
+        ArrayList<Proceso> procesosTerminados = new ArrayList<>();
 
         for (int i = 0; i < NPROC; i++) {
             String nombreArchivo = "proc" + (i + 1) + ".txt";
             Proceso proceso = new Proceso(nombreArchivo, marcos);
             proceso.setMarcos(marcos_proceso);
-            List<Integer> dvList = proceso.getDvList();
-            
-            for (int dv : dvList) {
-                int pagina = dv / proceso.TP;
-                int offset = dv % proceso.TP;
-                System.out.println("DV: " + dv + " -> Pagina: " + pagina + ", Offset: " + offset);
-            }
-
             cola.add(proceso);
         }
-    
+        
         while (!cola.isEmpty()){
-
             Proceso procesoActual = cola.poll();
-            
+            int puntero = procesoActual.puntero;
+            Map<Integer, Integer> tablaPaginas = procesoActual.tablaPaginas;
+            if(tablaPaginas.size() == procesoActual.marcos){
+                if(!tablaPaginas.containsKey(puntero)){
+                    int indice = EncontrarMayor(tablaPaginas.values().toArray());
+                    int paginaAEliminar = (int) tablaPaginas.keySet().toArray()[indice];
+                    tablaPaginas.remove(paginaAEliminar);
+                    procesoActual.aumentarTs();
+
+                    tablaPaginas.put(procesoActual.dvList.get(puntero), 0);
+                    procesoActual.fallos +=1;
+                    procesoActual.swap +=1;
+                    
+                } else {
+                    procesoActual.aumentarTs();
+                    tablaPaginas.put(procesoActual.dvList.get(puntero), 0);
+                    procesoActual.hits +=1;
+                }
+            } else {
+                if(!tablaPaginas.containsKey(puntero)){
+                    procesoActual.aumentarTs();
+                    tablaPaginas.put(puntero, 0);
+                    procesoActual.swap +=1;
+                    procesoActual.fallos +=1;
+                } else {
+                    procesoActual.aumentarTs();
+                    tablaPaginas.put(procesoActual.dvList.get(puntero), 0);
+                    procesoActual.hits +=1;
+                }
+            }
+            procesoActual.puntero +=1;
+
+            if (procesoActual.puntero == procesoActual.dvList.size()){
+                //quiero buscar el proceso con mas fallos y darle los marcos extra
+                procesosTerminados.add(procesoActual);
+                int mayorFallos = Integer.MIN_VALUE;
+                Proceso procesoMasFallos = null;
+                for (Proceso p : cola) {
+                    if (p.fallos > mayorFallos) {
+                        mayorFallos = p.fallos;
+                        procesoMasFallos = p;
+                    }
+                }
+                if (procesoMasFallos != null){
+                    procesoMasFallos.marcos += marcos_proceso;
+                }
+            }
+            else{
+                cola.add(procesoActual);
+            }
+        }
+        int i = 0;
+        for(Proceso p:procesosTerminados){
+            StringBuilder sb = new StringBuilder();
+            sb.append("Proceso: ").append(i).append(" - ");
+            i++;
+            sb.append("Num referencias: ").append(p.referencias).append(" - ");
+            sb.append("Fallas: ").append(p.fallos).append(" - ");
+            sb.append("Hits: ").append(p.hits).append(" - ");
+            sb.append("Swaps: ").append(p.swap).append(" - ");
+            double tasaFallos = (double) p.fallos / p.referencias * 100;
+            sb.append(String.format("Tasa fallas: %.2f%%", tasaFallos));
+            sb.append(" - ");
+            sb.append(String.format("Tasa aciertos: %.2f%%", (100 - tasaFallos)));
+            sb.append("\n");
+            System.out.print(sb.toString());
 
         }
 
