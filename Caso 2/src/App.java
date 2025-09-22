@@ -5,9 +5,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.cert.LDAPCertStoreParameters;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.List;
+import java.util.Queue;
 
 public class App {
     
@@ -135,6 +137,9 @@ public class App {
 
     public void opcion_2(int marcos, int NPROC) {
         int marcos_proceso= marcos/NPROC;
+        Queue<Proceso> cola = new java.util.LinkedList<>();
+
+
         for (int i = 0; i < NPROC; i++) {
             String nombreArchivo = "proc" + (i + 1) + ".txt";
             Proceso proceso = new Proceso(nombreArchivo, marcos);
@@ -146,6 +151,17 @@ public class App {
                 int offset = dv % proceso.TP;
                 System.out.println("DV: " + dv + " -> Pagina: " + pagina + ", Offset: " + offset);
             }
+
+            cola.add(proceso);
         }
+    
+        while (!cola.isEmpty()){
+
+            Proceso procesoActual = cola.poll();
+            
+
+        }
+
+
 }
 }

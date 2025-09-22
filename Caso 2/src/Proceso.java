@@ -11,6 +11,10 @@ public class Proceso {
     public int TP;
     public List<Integer> dvList= new java.util.ArrayList<>();
     public Map<Integer, Integer> tablaPaginas = new java.util.HashMap<>();
+    public int fallos = 0;
+    public int hits = 0;
+    public int referencias = 0;
+    public int swap = 0;
 
     public Proceso(String nombreArchivo, int marcos) {
         this.nombreArchivo = nombreArchivo;
