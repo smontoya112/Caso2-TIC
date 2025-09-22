@@ -185,7 +185,7 @@ public class App {
                     System.out.println("Fallo de pagina en proc mv = " + procesoActual.dvList.get(puntero) );
                     fallo = true;
                     procesoActual.aumentarTs();
-                    tablaPaginas.put(puntero, 0);
+                    tablaPaginas.put(procesoActual.dvList.get(puntero), 0);
                     procesoActual.swap +=1;
                     procesoActual.fallos +=1;
                 } else {
