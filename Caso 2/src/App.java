@@ -154,37 +154,46 @@ public class App {
         
         while (!cola.isEmpty()){
             Proceso procesoActual = cola.poll();
+            System.out.println("Turno proc = " + procesoActual.nombreArchivo );
             int puntero = procesoActual.puntero;
             Map<Integer, Integer> tablaPaginas = procesoActual.tablaPaginas;
             boolean fallo = false;
+            System.out.println("Puntero = " + puntero);
             if(tablaPaginas.size() == procesoActual.marcos){
-                if(!tablaPaginas.containsKey(puntero)){
+                if(!tablaPaginas.containsKey(procesoActual.dvList.get(puntero))){
+                    System.out.println("Fallo de pagina en proc ml = " + procesoActual.dvList.get(puntero) );
                     fallo = true;
                     int indice = EncontrarMayor(tablaPaginas.values().toArray());
                     int paginaAEliminar = (int) tablaPaginas.keySet().toArray()[indice];
                     tablaPaginas.remove(paginaAEliminar);
-                    procesoActual.aumentarTs();
                     
                     tablaPaginas.put(procesoActual.dvList.get(puntero), 0);
                     procesoActual.fallos +=1;
                     procesoActual.swap +=1;
-                    
-                } else {
+                    System.out.println("Envejecimiento" );
                     procesoActual.aumentarTs();
+                } else {
                     tablaPaginas.put(procesoActual.dvList.get(puntero), 0);
+                    
                     procesoActual.hits +=1;
+                    System.out.println("Hits" + procesoActual.hits);
+                    procesoActual.aumentarTs();
+                    System.out.println("Envejecimiento" );
                 }
             } else {
-                if(!tablaPaginas.containsKey(puntero)){
+                if(!tablaPaginas.containsKey(procesoActual.dvList.get(puntero))){
+                    System.out.println("Fallo de pagina en proc mv = " + procesoActual.dvList.get(puntero) );
                     fallo = true;
                     procesoActual.aumentarTs();
                     tablaPaginas.put(puntero, 0);
                     procesoActual.swap +=1;
                     procesoActual.fallos +=1;
                 } else {
-                    procesoActual.aumentarTs();
                     tablaPaginas.put(procesoActual.dvList.get(puntero), 0);
                     procesoActual.hits +=1;
+                    System.out.println("Hits" + procesoActual.hits);
+                    procesoActual.aumentarTs();
+                    System.out.println("Envejecimiento" );
                 }
             }
 
@@ -208,6 +217,7 @@ public class App {
                 }
             }
             else{
+                procesoActual.tablaPaginas = tablaPaginas;
                 cola.add(procesoActual);
             }
         }

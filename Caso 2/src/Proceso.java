@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Proceso {
 
-    private String nombreArchivo;
+    public String nombreArchivo;
     public int marcos;
     public int TP;
     public List<Integer> dvList= new java.util.ArrayList<>();
