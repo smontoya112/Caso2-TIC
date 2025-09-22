@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.List;
 
 public class App {
     
@@ -64,7 +65,15 @@ public class App {
                 archivo.close();
                 sc.close();
             }
-            case 2 -> System.out.println("Opcion 2 no implementada");
+            case 2 -> {
+                
+                System.out.println("Ingrese el numero de marcos (M):");
+                int marcos = sc.nextInt();
+                System.out.println("Ingrese el numero de procesos (NPROC):");
+                int NPROC = sc.nextInt();
+                new App().opcion_2(marcos, NPROC);
+                sc.close();
+            }
             default -> System.out.println("Opcion no valida");
         }
     }
@@ -122,4 +131,21 @@ public class App {
 }
 
     }
+
+
+    public void opcion_2(int marcos, int NPROC) {
+        int marcos_proceso= marcos/NPROC;
+        for (int i = 0; i < NPROC; i++) {
+            String nombreArchivo = "proc" + (i + 1) + ".txt";
+            Proceso proceso = new Proceso(nombreArchivo, marcos);
+            proceso.setMarcos(marcos_proceso);
+            List<Integer> dvList = proceso.getDvList();
+            
+            for (int dv : dvList) {
+                int pagina = dv / proceso.TP;
+                int offset = dv % proceso.TP;
+                System.out.println("DV: " + dv + " -> Pagina: " + pagina + ", Offset: " + offset);
+            }
+        }
+}
 }
