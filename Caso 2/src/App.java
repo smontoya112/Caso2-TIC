@@ -78,7 +78,7 @@ public class App {
                 int marcos = sc.nextInt();
                 System.out.println("Ingrese el numero de procesos (NPROC):");
                 int NPROC = sc.nextInt();
-                new App().opcion_2(marcos, NPROC);
+                new App().opcion_2(marcos,  NPROC);
                 sc.close();
             }
             default -> System.out.println("Opcion no valida");
@@ -156,13 +156,15 @@ public class App {
             Proceso procesoActual = cola.poll();
             int puntero = procesoActual.puntero;
             Map<Integer, Integer> tablaPaginas = procesoActual.tablaPaginas;
+            boolean fallo = false;
             if(tablaPaginas.size() == procesoActual.marcos){
                 if(!tablaPaginas.containsKey(puntero)){
+                    fallo = true;
                     int indice = EncontrarMayor(tablaPaginas.values().toArray());
                     int paginaAEliminar = (int) tablaPaginas.keySet().toArray()[indice];
                     tablaPaginas.remove(paginaAEliminar);
                     procesoActual.aumentarTs();
-
+                    
                     tablaPaginas.put(procesoActual.dvList.get(puntero), 0);
                     procesoActual.fallos +=1;
                     procesoActual.swap +=1;
@@ -174,6 +176,7 @@ public class App {
                 }
             } else {
                 if(!tablaPaginas.containsKey(puntero)){
+                    fallo = true;
                     procesoActual.aumentarTs();
                     tablaPaginas.put(puntero, 0);
                     procesoActual.swap +=1;
@@ -184,7 +187,10 @@ public class App {
                     procesoActual.hits +=1;
                 }
             }
-            procesoActual.puntero +=1;
+
+            if (!fallo){
+                procesoActual.puntero +=1;
+            }
 
             if (procesoActual.puntero == procesoActual.dvList.size()){
                 //quiero buscar el proceso con mas fallos y darle los marcos extra
