@@ -146,7 +146,7 @@ public class App {
         ArrayList<Proceso> procesosTerminados = new ArrayList<>();
 
         for (int i = 0; i < NPROC; i++) {
-            String nombreArchivo = "proc" + (i + 1) + ".txt";
+            String nombreArchivo = "Resultados\\"+"proc" + (i + 1) + ".txt";
             Proceso proceso = new Proceso(nombreArchivo, marcos);
             proceso.setMarcos(marcos_proceso);
             cola.add(proceso);

@@ -35,7 +35,7 @@ public class Proceso {
     private void leerArchivo(String nombreArchivo) {
         
          try {
-            List<String> lineas = Files.readAllLines(Paths.get("Caso2-TIC\\Caso 2\\src\\Resultados\\" + nombreArchivo));
+            List<String> lineas = Files.readAllLines(Paths.get(nombreArchivo));
             
             
             for (String linea : lineas) {
