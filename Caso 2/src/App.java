@@ -112,21 +112,21 @@ public class App {
             for (int i = 0; i < NF; i++) {
                 for (int j = 0; j < NC; j++) {
                 //M1 lectura
-                int dv1 = baseM1 + ((i * NC) + j) * bytesPorEntero;
-                int pagina1 = dv1 / TP;
-                int offset1 = dv1 % TP;
+                int entero_M1 = baseM1 + ((i * NC) + j) * bytesPorEntero;
+                int pagina1 = entero_M1 / TP;
+                int offset1 = entero_M1 % TP;
                 info += "M1:[" + i + "-" + j + "]," + pagina1 + "," + offset1 + ",r\n";
 
                 // M2 lectura 
-                int dv2 = baseM2 + ((i * NC) + j) * bytesPorEntero;
-                int pagina2 = dv2 / TP;
-                int offset2 = dv2 % TP;
+                int entero_M2 = baseM2 + ((i * NC) + j) * bytesPorEntero;
+                int pagina2 = entero_M2 / TP;
+                int offset2 = entero_M2 % TP;
                 info += "M2:[" + i + "-" + j + "]," + pagina2 + "," + offset2 + ",r\n";
 
                 // M3 escritura
-                int dv3 = baseM3 + ((i * NC) + j) * bytesPorEntero;
-                int pagina3 = dv3 / TP;
-                int offset3 = dv3 % TP;
+                int entero_M3 = baseM3 + ((i * NC) + j) * bytesPorEntero;
+                int pagina3 = entero_M3 / TP;
+                int offset3 = entero_M3 % TP;
                 info += "M3:[" + i + "-" + j + "]," + pagina3 + "," + offset3 + ",w\n";
         }
 
